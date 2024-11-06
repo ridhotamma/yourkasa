@@ -12,6 +12,7 @@ services:
       - user-service
       - product-service
       - auth-service
+      - order-service
     networks:
       - yourkasa_network
     restart: unless-stopped
@@ -108,6 +109,42 @@ services:
     networks:
       - yourkasa_network
 
+  order_db:
+    image: postgres:latest
+    container_name: yourkasa_order_db
+    env_file: ./order-service/.env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: yourkasa_order
+    ports:
+      - "5435:5432"
+    volumes:
+      - order_db_data:/var/lib/postgresql/data
+    networks:
+      - yourkasa_network
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: yourkasa_order_service
+    env_file: .env
+    environment:
+      - DB_HOST=order_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=yourkasa_order
+      - DB_PORT=5432
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+    expose:
+      - "8081"
+    depends_on:
+      - order_db
+      - product-service
+    networks:
+      - yourkasa_network
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -145,6 +182,8 @@ volumes:
     name: yourkasa_user_db_data
   product_db_data:
     name: yourkasa_product_db_data
+  order_db_data:
+    name: yourkasa_order_db_data
   prometheus_data:
   grafana_data:
 
