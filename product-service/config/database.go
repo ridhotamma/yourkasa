@@ -29,7 +29,15 @@ func InitDB() *gorm.DB {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
-	err = db.AutoMigrate(&models.Product{})
+	err = db.AutoMigrate(
+		&models.Product{},
+		&models.ProductCategory{},
+		&models.ProductVariant{},
+		&models.ProductAddon{},
+		&models.ProductGroup{},
+		&models.ProductAddonMapping{},
+	)
+
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
