@@ -14,7 +14,8 @@ services:
       - auth-service
     networks:
       - yourkasa_network
-
+    restart: unless-stopped
+    
   user_db:
     image: postgres:latest
     container_name: yourkasa_user_db
@@ -33,7 +34,7 @@ services:
   product_db:
     image: postgres:latest
     container_name: yourkasa_product_db
-    env_file: .env
+    env_file: ./product-service/.env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
