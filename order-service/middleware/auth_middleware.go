@@ -39,6 +39,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		ctx.Set("customerId", "1")
 		ctx.Set("userId", claims.UserID)
 		ctx.Set("userEmail", claims.Email)
 		ctx.Set("userRole", claims.Role)
