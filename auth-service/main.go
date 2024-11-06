@@ -8,6 +8,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/ridhotamma/yourkasa/auth-service/config"
 	"github.com/ridhotamma/yourkasa/auth-service/routes"
+	"github.com/ridhotamma/yourkasa/auth-service/utils"
 )
 
 var (
@@ -51,6 +52,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(prometheusMiddleware())
+	r.Use(utils.ValidationMiddleware())
 
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 

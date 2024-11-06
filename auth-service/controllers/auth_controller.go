@@ -30,7 +30,7 @@ type User struct {
 func (c *AuthController) Login(ctx *gin.Context) {
 	var input dto.LoginDTO
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Email and Password are required"})
 		return
 	}
 
