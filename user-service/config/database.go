@@ -29,5 +29,10 @@ func InitDB() *gorm.DB {
 		log.Fatal("Failed to migrate database:", err)
 	}
 
+	// Seed default users
+	if err := SeedUsers(db); err != nil {
+		log.Fatal("Failed to seed users:", err)
+	}
+
 	return db
 }
