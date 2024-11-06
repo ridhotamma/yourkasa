@@ -15,6 +15,21 @@ services:
     networks:
       - yourkasa_network
 
+  product_db:
+    image: postgres:latest
+    container_name: yourkasa_product_db
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: yourkasa_product
+    ports:
+      - "5434:5432"
+    volumes:
+      - product_db_data:/var/lib/postgresql/data
+    networks:
+      - yourkasa_network
+
   user-service:
     build:
       context: ./user-service
@@ -33,6 +48,26 @@ services:
       - "8080:8080"
     depends_on:
       - user_db
+    networks:
+      - yourkasa_network
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: yourkasa_product_service
+    env_file: .env
+    environment:
+      - DB_HOST=product_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=yourkasa_product
+      - DB_PORT=5432
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+    ports:
+      - "8082:8080"
+    depends_on:
+      - product_db
     networks:
       - yourkasa_network
 
@@ -92,6 +127,8 @@ services:
 volumes:
   user_db_data:
     name: yourkasa_user_db_data
+  product_db_data:
+    name: yourkasa_product_db_data
   prometheus_data:
   grafana_data:
 
